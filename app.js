@@ -2,7 +2,7 @@
 const NAMES = [
   "Pablo", "Ale", "Flor", "Andre", "Meri",
   "Gasti", "Majo", "Cande", "Valen", "Didi",
-  "Gise", "Marian", "Héctor", "Gabi", "Bogado"
+  "Gise", "Marian", "Héctor", "Gabi", "Bogado", "Invitado"
 ];
 
 // --- Render botones ---
