@@ -54,17 +54,19 @@ function applyRules(selected) {
 // -----------------------------------------------------
 // 🎰 RULETA + ANIMACIÓN
 // -----------------------------------------------------
-
+/*
 function updateRoulette(names) {
   const r = document.getElementById("roulette");
   r.innerHTML = names.length === 0 ? "" : names.join(" · ");
 }
-
+*/
 function spinRouletteAndPick(names) {
   return new Promise(resolve => {
     const roulette = document.getElementById("roulette");
 
-    // giro aleatorio grande
+    // Animación suave
+    roulette.style.transition = "transform 3s cubic-bezier(0.12, 0.85, 0.35, 1)";
+
     const angle = 720 + Math.random() * 720;
     roulette.style.transform = `rotate(${angle}deg)`;
 
@@ -79,7 +81,7 @@ function animateWinner(name) {
   const w = document.getElementById("winner");
   const steam = document.getElementById("steamContainer");
 
-  w.textContent = `Ganó: ${name} ☕`;
+  w.textContent = `Hoy le toca a ${name} ☕`;
   w.classList.remove("opacity-0");
   w.classList.add("opacity-100");
 
@@ -109,7 +111,8 @@ document.getElementById("drawBtn").onclick = async () => {
   let eligible = applyRules(selected);
   if (eligible.length === 0) eligible = selected;
 
-  updateRoulette(eligible);
+  //updateRoulette(eligible);
+  updateRoulette();
 
   const winner = await spinRouletteAndPick(eligible);
   animateWinner(winner);
