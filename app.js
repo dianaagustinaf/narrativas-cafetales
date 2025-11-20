@@ -60,6 +60,13 @@ function updateRoulette(names) {
   r.innerHTML = names.length === 0 ? "" : names.join(" · ");
 }
 */
+
+function updateRoulette() {
+  const r = document.getElementById("roulette");
+  r.innerHTML = "☕"; // café grande como “ruleta”
+  r.style.fontSize = "4rem";   // ajustá el tamaño que quieras
+}
+
 function spinRouletteAndPick(names) {
   return new Promise(resolve => {
     const roulette = document.getElementById("roulette");
