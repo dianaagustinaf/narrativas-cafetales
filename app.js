@@ -1,9 +1,41 @@
 // --- Lista fija ---
 const NAMES = [
   "Pablo", "Ale", "Flor", "Andre", "Meri",
-  "Gasti", "Majo", "Cande", "Valen", "Didi",
-  "Gise", "Marian", "Héctor", "Gabi", "Bogado", "Invitado"
+  "Gas", "Majo", "Cande", "Valen", "Didi",
+  "Gise", "Marian", "Héctor", "Gabo", "Boga", "Invitado"
 ];
+
+const DRINKS = [
+  "Solo",
+  "Cortado",
+  "Cortado doble",
+  "Café con leche",
+  "Lágrima",
+  "Té"
+];
+
+// Libro telefónico
+const phoneBook = {
+  "Pablo": "5491112345678",
+  "Ale": "5491187654321",
+  "Flor": "5491133344455",
+  "Andre": "5491198765432",
+  "Meri": "5491122211122",
+  "Gas": "5491112345678",
+  "Majo": "5491187654321",
+  "Cande": "5491133344455",
+  "Valen": "5491198765432",
+  "Didi": "54911234234552",
+  "Gise": "5491112345678",
+  "Marian": "5491187654321",
+  "Héctor": "5491133344455",
+  "Gabo": "5491198765432",
+  "Boga": "5491122211122",
+};
+
+
+let lastWinner = null;
+
 
 // --- Render botones ---
 const nameList = document.getElementById("nameList");
@@ -122,7 +154,9 @@ document.getElementById("drawBtn").onclick = async () => {
   updateRoulette();
 
   const winner = await spinRouletteAndPick(eligible);
+  lastWinner = winner;   //  guarda ganador globalmente
   animateWinner(winner);
+  showOrderPanel();
 
   saveHistory({
     date: new Date().toISOString().split("T")[0],
@@ -131,6 +165,135 @@ document.getElementById("drawBtn").onclick = async () => {
 
   renderStats();
 };
+
+
+
+
+
+
+// -----------------------------------------------------
+// PANEL COUNT CAFECITOS
+// -----------------------------------------------------
+
+function showOrderPanel() {
+  const panel = document.getElementById("orderPanel");
+  const list = document.getElementById("orderList");
+
+  panel.classList.remove("hidden");
+  list.innerHTML = ""; // limpiar por si ya se usó antes
+
+  DRINKS.forEach(drink => {
+    const row = document.createElement("div");
+    row.className = "flex items-center justify-between bg-white p-3 rounded-lg border";
+
+    row.innerHTML = `
+      <span class="font-medium">${drink}</span>
+      <div class="flex items-center gap-3">
+        <button class="minus bg-blue-200 px-2 rounded">−</button>
+        <span class="count text-lg font-semibold">0</span>
+        <button class="plus bg-blue-200 px-2 rounded">+</button>
+      </div>
+    `;
+
+    const minus = row.querySelector(".minus");
+    const plus = row.querySelector(".plus");
+    const countSpan = row.querySelector(".count");
+
+    minus.onclick = () => {
+      let v = parseInt(countSpan.textContent);
+      if (v > 0) countSpan.textContent = v - 1;
+    };
+
+    plus.onclick = () => {
+      let v = parseInt(countSpan.textContent);
+      countSpan.textContent = v + 1;
+    };
+
+    list.appendChild(row);
+  });
+}
+
+
+
+
+
+
+// -----------------------------------------------------
+// BOTON ENVIAR + WASAP
+// -----------------------------------------------------
+
+
+document.getElementById("sendOrderBtn").onclick = () => {
+  const rows = document.querySelectorAll("#orderList > div");
+  const order = [];
+
+  rows.forEach(row => {
+    const drink = row.querySelector("span").textContent;
+    const count = parseInt(row.querySelector(".count").textContent);
+
+    if (count > 0) {
+      order.push({ drink, count });
+    }
+  });
+
+  if (order.length === 0) {
+    alert("No pediste nada todavía ☕");
+    return;
+  }
+// arma pedido
+  let summary = "Pedido:\n\n";
+  order.forEach(o => summary += `${o.count} × ${o.drink}\n`);
+
+  //alert(summary);
+
+  document.getElementById("sendOrderBtn").onclick = () => {
+  const rows = document.querySelectorAll("#orderList > div");
+  const order = [];
+
+  rows.forEach(row => {
+    const drink = row.querySelector("span").textContent;
+    const count = parseInt(row.querySelector(".count").textContent);
+
+    if (count > 0) {
+      order.push({ drink, count });
+    }
+  });
+
+  if (order.length === 0) {
+    alert("No pediste nada todavía ☕");
+    return;
+  }
+
+  // -------------------------
+  // 📌 OBTENER GANADOR ACTUAL
+  // -------------------------
+  const winner = lastWinner; // si tu variable global se llama distinto, decime
+  const number = phoneBook[winner];
+
+  if (!number) {
+    alert("No tengo el número del ganador para enviar el pedido de café ☕");
+    return;
+  }
+
+  // -------------------------
+  // 📌 ARMAR EL MENSAJE
+  // -------------------------
+  let summary = `☕ *Pedido para ${winner}*\n\n`;
+
+  order.forEach(o => {
+    summary += `${o.count} × ${o.drink}\n`;
+  });
+
+  // -------------------------
+  // 📌 ABRIR WHATSAPP
+  // -------------------------
+  const url = `https://wa.me/${number}?text=${encodeURIComponent(summary)}`;
+  window.open(url, "_blank");
+};
+
+
+};
+
 
 
 // -----------------------------------------------------
